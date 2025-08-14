@@ -8,7 +8,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [openIndexes, setOpenIndexes] = useState([]);
   const [aiReading, setAiReading] = useState("");
-  const [readingLoading, setReadingLoading] = useState(false); // AI reading loading state
+  const [readingLoading, setReadingLoading] = useState(false); 
 
   const handleDrawCards = async () => {
     if (!question.trim()) {
@@ -21,17 +21,15 @@ function App() {
     setAiReading(""); 
 
     try {
-      // Draw 3 cards
       const promises = [1, 2, 3].map(() =>
-        axios.get("http://localhost:3001/cards/onecard")
+        axios.get("https://tarotapi-g3x5.onrender.com/cards/onecard")
       );
       const results = await Promise.all(promises);
       const drawnCards = results.map(res => res.data);
       setCards(drawnCards);
       setOpenIndexes([]);
 
-      // Fetch AI reading
-      const readingRes = await axios.post("http://localhost:3001/reading", {
+      const readingRes = await axios.post("https://tarotapi-g3x5.onrender.com/reading", {
         question,
         cards: drawnCards,
       });
@@ -70,7 +68,6 @@ function App() {
   })}
 </div>
 
-    {/* Main app content */}
     <div className="app">
       <h1>🌙 Moon and Cards 🌙</h1>
 
@@ -88,11 +85,11 @@ function App() {
       <div className="cards">
         {cards.map((card, index) => (
           <div key={index} className="card">
-            <img
-              src={`http://localhost:3001${card.image}`} 
-              alt={card.name}
-              className="card-image"
-            />
+           <img
+             src={`https://tarotapi-g3x5.onrender.com${card.image}`}
+             alt={card.name}
+             className="card-image"
+           />
             <h3>{card.name}</h3>
 
             <button 
