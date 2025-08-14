@@ -1,3 +1,5 @@
+@import "./ai.css";
+@import "./stars.css";
 
 body {
   background: linear-gradient(to bottom, #0b0c1e, #1a1a3d);
@@ -114,15 +116,4 @@ button:hover {
   font-size: 14px;
   margin-top: 10px;
   color: #e0d8f7;
-}
-
-.ai-reading {
-  margin-top: 25px;
-  padding: 15px;
-  border: 1px solid #6a6abf;
-  border-radius: 10px;
-  background: rgba(74, 74, 138, 0.1);
-  color: #333;
-  font-style: italic;
-  text-align: left;
 }

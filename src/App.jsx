@@ -8,6 +8,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [openIndexes, setOpenIndexes] = useState([]);
   const [aiReading, setAiReading] = useState("");
+  const [readingLoading, setReadingLoading] = useState(false); // AI reading loading state
 
   const handleDrawCards = async () => {
     if (!question.trim()) {
@@ -16,8 +17,11 @@ function App() {
     }
 
     setLoading(true);
+    setReadingLoading(true);
     setAiReading(""); 
+
     try {
+      // Draw 3 cards
       const promises = [1, 2, 3].map(() =>
         axios.get("http://localhost:3001/cards/onecard")
       );
@@ -26,18 +30,20 @@ function App() {
       setCards(drawnCards);
       setOpenIndexes([]);
 
+      // Fetch AI reading
       const readingRes = await axios.post("http://localhost:3001/reading", {
         question,
         cards: drawnCards,
       });
 
       setAiReading(readingRes.data.reading);
-
     } catch (error) {
       console.error(error);
       alert("Something went wrong while fetching cards or AI reading.");
     }
+
     setLoading(false);
+    setReadingLoading(false);
   };
 
   const toggleDescription = (index) => {
@@ -49,6 +55,22 @@ function App() {
   };
 
   return (
+  <div className="app-container">
+  <div className="glittering-stars">
+  {[...Array(50)].map((_, i) => {
+    const style = {
+      top: Math.random() * 100 + "vh",
+      left: Math.random() * 100 + "vw",
+      width: 8 + Math.random() * 8 + "px",
+      height: 8 + Math.random() * 8 + "px",
+      animationDuration: 1 + Math.random() * 2 + "s",
+      animationDelay: Math.random() * 5 + "s",
+    };
+    return <div key={i} className="star" style={style}></div>;
+  })}
+</div>
+
+    {/* Main app content */}
     <div className="app">
       <h1>🌙 Moon and Cards 🌙</h1>
 
@@ -60,7 +82,7 @@ function App() {
       />
 
       <button onClick={handleDrawCards} disabled={loading}>
-        {loading ? "Loading response, please wait..." : "Draw 3 Cards"}
+        {loading ? "Asking the stars...Give me a moment." : "Draw 3 Cards"}
       </button>
 
       <div className="cards">
@@ -80,23 +102,36 @@ function App() {
               {openIndexes.includes(index) ? "Hide Description" : "Show Description"}
             </button>
 
-            <div 
-              className={`description-container ${openIndexes.includes(index) ? "open" : ""}`}
-            >
-              <p className="description">{card.description}</p>
-            </div>
+            {openIndexes.includes(index) && card.description && (
+              <div className="description-container open">
+                <p className="description">{card.description}</p>
+              </div>
+            )}
           </div>
         ))}
       </div>
 
-      {aiReading && (
+      {(readingLoading || aiReading) && (
         <div className="ai-reading">
-          <h2>✨Tarot Reading:</h2>
-          <p>{aiReading}</p>
+          {readingLoading ? (
+            <div className="spinner">
+              <div className="star"></div>
+              <div className="star"></div>
+              <div className="star"></div>
+              <div className="star"></div>
+              <div className="star"></div>
+            </div>
+          ) : (
+            <div>
+              <h2>✨ Your Tarot Reading:</h2>
+              <p>{aiReading}</p>
+            </div>
+          )}
         </div>
       )}
     </div>
-  );
-}
+  </div>
+);
 
+}
 export default App;
