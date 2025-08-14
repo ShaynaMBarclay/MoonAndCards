@@ -1,12 +1,12 @@
 import { useState } from "react";
+import axios from "axios";
 import "./styles/App.css";
 
 function App() {
   const [question, setQuestion] = useState("");
   const [cards, setCards] = useState([]);
-  const [loading, setLoading] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Fetch random 3 cards from tarotapi.dev
   const handleDrawCards = async () => {
     if (!question.trim()) {
       alert("Please enter a question first.");
@@ -15,16 +15,18 @@ function App() {
 
     setLoading(true);
     try {
-      const res = await fetch("https://tarotapi.dev/api/v1/cards/random?n=3");
-      const data = await res.json();
-      setCards(data.cards);
+      // Draw 3 cards by calling /onecard three times
+      const promises = [1, 2, 3].map(() =>
+        axios.get("http://localhost:3001/cards/onecard")
+      );
+      const results = await Promise.all(promises);
+      setCards(results.map(res => res.data));
     } catch (error) {
-      console.error("Error fetching tarot cards:", error);
+      console.error(error);
       alert("Something went wrong while fetching cards.");
     }
     setLoading(false);
   };
-
 
   return (
     <div className="app">
@@ -38,20 +40,19 @@ function App() {
       />
 
       <button onClick={handleDrawCards} disabled={loading}>
-        {loading ? "Shuffling..." : "Draw Cards"}
+        {loading ? "Shuffling..." : "Draw 3 Cards"}
       </button>
 
       <div className="cards">
         {cards.map((card, index) => (
           <div key={index} className="card">
             <img
-              src={card.image}
+              src={`http://localhost:3001${card.image}`} 
               alt={card.name}
               className="card-image"
             />
             <h3>{card.name}</h3>
-            <p><strong>Upright:</strong> {card.meaning_up}</p>
-            <p><strong>Reversed:</strong> {card.meaning_rev}</p>
+            <p>{card.description}</p>
           </div>
         ))}
       </div>
