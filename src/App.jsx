@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import "./styles/App.css";
 
@@ -7,6 +7,7 @@ function App() {
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openIndexes, setOpenIndexes] = useState([]);
+  const [aiReading, setAiReading] = useState("");
 
   const handleDrawCards = async () => {
     if (!question.trim()) {
@@ -15,16 +16,26 @@ function App() {
     }
 
     setLoading(true);
+    setAiReading(""); 
     try {
       const promises = [1, 2, 3].map(() =>
         axios.get("http://localhost:3001/cards/onecard")
       );
       const results = await Promise.all(promises);
-      setCards(results.map(res => res.data));
+      const drawnCards = results.map(res => res.data);
+      setCards(drawnCards);
       setOpenIndexes([]);
+
+      const readingRes = await axios.post("http://localhost:3001/reading", {
+        question,
+        cards: drawnCards,
+      });
+
+      setAiReading(readingRes.data.reading);
+
     } catch (error) {
       console.error(error);
-      alert("Something went wrong while fetching cards.");
+      alert("Something went wrong while fetching cards or AI reading.");
     }
     setLoading(false);
   };
@@ -49,7 +60,7 @@ function App() {
       />
 
       <button onClick={handleDrawCards} disabled={loading}>
-        {loading ? "Shuffling..." : "Draw 3 Cards"}
+        {loading ? "Loading response, please wait..." : "Draw 3 Cards"}
       </button>
 
       <div className="cards">
@@ -77,6 +88,13 @@ function App() {
           </div>
         ))}
       </div>
+
+      {aiReading && (
+        <div className="ai-reading">
+          <h2>✨Tarot Reading:</h2>
+          <p>{aiReading}</p>
+        </div>
+      )}
     </div>
   );
 }
