@@ -5,6 +5,7 @@ import "./styles/App.css";
 function App() {
   const [question, setQuestion] = useState("");
   const [cards, setCards] = useState([]);
+  const [visibleCards, setVisibleCards] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openIndexes, setOpenIndexes] = useState([]);
   const [aiReading, setAiReading] = useState("");
@@ -20,8 +21,7 @@ function App() {
     setReadingLoading(true);
     setAiReading("");
     setCards([]);
-    setVisibleCards([]); 
-
+    
     try {
       const promises = [1, 2, 3].map(() =>
         axios.get("https://tarotapi-g3x5.onrender.com/cards/onecard")
