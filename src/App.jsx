@@ -6,6 +6,7 @@ function App() {
   const [question, setQuestion] = useState("");
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [openIndexes, setOpenIndexes] = useState([]);
 
   const handleDrawCards = async () => {
     if (!question.trim()) {
@@ -15,7 +16,6 @@ function App() {
 
     setLoading(true);
     try {
-      // Draw 3 cards by calling /onecard three times
       const promises = [1, 2, 3].map(() =>
         axios.get("http://localhost:3001/cards/onecard")
       );
@@ -26,6 +26,15 @@ function App() {
       alert("Something went wrong while fetching cards.");
     }
     setLoading(false);
+  };
+
+  
+  const toggleDescription = (index) => {
+    setOpenIndexes(prev =>
+      prev.includes(index)
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
   };
 
   return (
@@ -52,7 +61,16 @@ function App() {
               className="card-image"
             />
             <h3>{card.name}</h3>
-            <p>{card.description}</p>
+                <button 
+              className="toggle-btn" 
+              onClick={() => toggleDescription(index)}
+            >
+              {openIndexes.includes(index) ? "Hide Description" : "Show Description"}
+            </button>
+
+            {openIndexes.includes(index) && (
+              <p className="description">{card.description}</p>
+            )}
           </div>
         ))}
       </div>

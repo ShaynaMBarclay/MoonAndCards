@@ -27,12 +27,34 @@ button {
 .card {
   border: 1px solid #ccc;
   border-radius: 8px;
-  width: 200px;
+  width: 220px;
   padding: 10px;
   background: #fff;
+  text-align: center;
 }
 
 .card-image {
   width: 100%;
   height: auto;
+}
+
+.toggle-btn {
+  padding: 5px 10px;
+  margin-top: 5px;
+  background-color: #4a4a8a;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.toggle-btn:hover {
+  background-color: #6a6abf;
+}
+
+.description {
+  margin-top: 10px;
+  text-align: left;
+  font-size: 14px;
+  transition: all 0.3s ease-in-out;
 }
