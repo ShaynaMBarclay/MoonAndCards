@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./styles/App.css";
 
@@ -21,6 +21,7 @@ function App() {
       );
       const results = await Promise.all(promises);
       setCards(results.map(res => res.data));
+      setOpenIndexes([]);
     } catch (error) {
       console.error(error);
       alert("Something went wrong while fetching cards.");
@@ -28,7 +29,6 @@ function App() {
     setLoading(false);
   };
 
-  
   const toggleDescription = (index) => {
     setOpenIndexes(prev =>
       prev.includes(index)
@@ -39,7 +39,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1>🌙 Moon and Cards</h1>
+      <h1>🌙 Moon and Cards 🌙</h1>
 
       <input
         type="text"
@@ -61,16 +61,19 @@ function App() {
               className="card-image"
             />
             <h3>{card.name}</h3>
-                <button 
+
+            <button 
               className="toggle-btn" 
               onClick={() => toggleDescription(index)}
             >
               {openIndexes.includes(index) ? "Hide Description" : "Show Description"}
             </button>
 
-            {openIndexes.includes(index) && (
+            <div 
+              className={`description-container ${openIndexes.includes(index) ? "open" : ""}`}
+            >
               <p className="description">{card.description}</p>
-            )}
+            </div>
           </div>
         ))}
       </div>
