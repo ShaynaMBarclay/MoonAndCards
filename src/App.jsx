@@ -122,7 +122,7 @@ function App() {
               <div className="star"></div>
             </div>
           ) : (
-            <div>
+            <div className="ai-text">
               <h2>✨ Your Tarot Reading:</h2>
               <p>{aiReading}</p>
             </div>
@@ -132,6 +132,5 @@ function App() {
     </div>
   </div>
 );
-
 }
 export default App;
