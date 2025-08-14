@@ -37,7 +37,7 @@ function App() {
       setAiReading(readingRes.data.reading);
     } catch (error) {
       console.error(error);
-      alert("Something went wrong while fetching cards or AI reading.");
+      alert("The cards are busy. Please try again in a moment..");
     }
 
     setLoading(false);
@@ -82,7 +82,7 @@ function App() {
       />
 
       <button onClick={handleDrawCards} disabled={loading}>
-        {loading ? "Asking the stars...Give me a moment." : "Draw 3 Cards"}
+        {loading ? "Asking the cards...Give me a moment." : "Draw 3 Cards"}
       </button>
 
       <div className="cards">
