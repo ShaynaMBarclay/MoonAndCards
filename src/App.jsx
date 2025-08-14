@@ -18,7 +18,9 @@ function App() {
 
     setLoading(true);
     setReadingLoading(true);
-    setAiReading(""); 
+    setAiReading("");
+    setCards([]);
+    setVisibleCards([]); 
 
     try {
       const promises = [1, 2, 3].map(() =>
@@ -28,6 +30,12 @@ function App() {
       const drawnCards = results.map(res => res.data);
       setCards(drawnCards);
       setOpenIndexes([]);
+
+       drawnCards.forEach((card, index) => {
+        setTimeout(() => {
+          setVisibleCards((prev) => [...prev, card]);
+        }, index * 500); 
+      });
 
       const readingRes = await axios.post("https://tarotapi-g3x5.onrender.com/reading", {
         question,
@@ -85,23 +93,21 @@ function App() {
         {loading ? "Asking the cards...Give me a moment." : "Draw 3 Cards"}
       </button>
 
-      <div className="cards">
-        {cards.map((card, index) => (
-          <div key={index} className="card">
-           <img
-             src={`https://tarotapi-g3x5.onrender.com${card.image}`}
-             alt={card.name}
-             className="card-image"
-           />
+       <div className="cards">
+        {visibleCards.map((card, index) => (
+          <div key={index} className="card fade-in">
+            <img
+              src={`https://tarotapi-g3x5.onrender.com${card.image}`}
+              alt={card.name}
+              className="card-image"
+            />
             <h3>{card.name}</h3>
-
-            <button 
-              className="toggle-btn" 
+            <button
+              className="toggle-btn"
               onClick={() => toggleDescription(index)}
             >
               {openIndexes.includes(index) ? "Hide Description" : "Show Description"}
             </button>
-
             {openIndexes.includes(index) && card.description && (
               <div className="description-container open">
                 <p className="description">{card.description}</p>
