@@ -71,9 +71,12 @@ function App() {
     <div className="app">
       <h1>🌙 Moon and Cards 🌙</h1>
 
+      <p> “Ask the cards anything, your question, your thoughts, or whatever’s on your mind. Scroll down to discover your tarot reading.
+      For entertainment purposes only. Results may not always be accurate.” </p>
+
       <input
         type="text"
-        placeholder="Type your question..."
+        placeholder="What will you ask of the cards?"
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
       />
