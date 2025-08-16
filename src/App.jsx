@@ -17,10 +17,13 @@ function App() {
       return;
     }
 
+    if (loading) return;
+
     setLoading(true);
     setReadingLoading(true);
     setAiReading("");
     setCards([]);
+    setVisibleCards([]);
     
     try {
       const promises = [1, 2, 3].map(() =>
