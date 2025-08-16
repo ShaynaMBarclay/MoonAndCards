@@ -25,19 +25,26 @@ function App() {
     setVisibleCards([]);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/cards`);
-      const deck = await response.json();
+      const url = `${import.meta.env.VITE_API_URL}/cards`;
+      const response = await fetch(url);
 
-      let availableCards = [...deck];
-      let drawn = [];
-
-      for (let i = 0; i < 3; i++) {
-        const randomIndex = Math.floor(Math.random() * availableCards.length);
-        const selectedCard = availableCards[randomIndex];
-        drawn.push(selectedCard);
-        availableCards.splice(randomIndex, 1);
+      const text = await response.text();
+      let deck;
+      try {
+        deck = JSON.parse(text);
+      } catch {
+        console.error("Failed to parse cards JSON. Got:", text);
+        alert("Error loading cards. Please check your backend URL.");
+        return;
       }
 
+      // --- Functional draw without duplicates ---
+      const drawCards = (deck, count) => {
+        const shuffled = [...deck].sort(() => Math.random() - 0.5); // shuffle deck
+        return shuffled.slice(0, count); // pick first `count` cards
+      };
+
+      const drawn = drawCards(deck, 3); // draw 3 unique cards
       setCards(drawn);
 
       drawn.forEach((card, index) => {
@@ -46,6 +53,7 @@ function App() {
         }, index * 800);
       });
 
+      // --- Fetch AI reading ---
       const readingResponse = await fetch(`${import.meta.env.VITE_API_URL}/reading`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -53,7 +61,7 @@ function App() {
       });
 
       const readingData = await readingResponse.json();
-      setAiReading(readingData.reading); 
+      setAiReading(readingData.reading);
 
     } catch (error) {
       console.error("Error drawing cards:", error);
@@ -66,9 +74,7 @@ function App() {
 
   const toggleDescription = (index) => {
     setOpenIndexes((prev) =>
-      prev.includes(index)
-        ? prev.filter((i) => i !== index)
-        : [...prev, index]
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
     );
   };
 
@@ -93,9 +99,9 @@ function App() {
         <h1>🌙 Moon and Cards 🌙</h1>
 
         <p>
-          Ask the cards anything, your question, your thoughts, or whatever’s on your mind.
-          Scroll down to discover your tarot reading. <br />
-          <em>For entertainment purposes only. Results may not always be accurate.</em>
+          Ask the cards anything. Scroll down to discover your tarot reading.
+          <br />
+          <em>For entertainment purposes only.</em>
         </p>
 
         <input
@@ -106,7 +112,7 @@ function App() {
         />
 
         <button onClick={handleDrawCards} disabled={loading}>
-          {loading ? "Asking the cards... Give me a moment." : "Draw 3 Cards"}
+          {loading ? "Asking the cards..." : "Draw 3 Cards"}
         </button>
 
         <div className="cards">
@@ -118,10 +124,7 @@ function App() {
                 className="card-image"
               />
               <h3>{card.name}</h3>
-              <button
-                className="toggle-btn"
-                onClick={() => toggleDescription(index)}
-              >
+              <button className="toggle-btn" onClick={() => toggleDescription(index)}>
                 {openIndexes.includes(index) ? "Hide Description" : "Show Description"}
               </button>
               {openIndexes.includes(index) && card.description && (
@@ -137,11 +140,7 @@ function App() {
           <div className="ai-reading">
             {readingLoading ? (
               <div className="spinner">
-                <div className="star"></div>
-                <div className="star"></div>
-                <div className="star"></div>
-                <div className="star"></div>
-                <div className="star"></div>
+                {[...Array(5)].map((_, i) => <div key={i} className="star"></div>)}
               </div>
             ) : (
               <div className="ai-text">
