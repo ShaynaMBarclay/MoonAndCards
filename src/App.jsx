@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 import "./styles/App.css";
 
 function App() {
@@ -9,9 +8,9 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [openIndexes, setOpenIndexes] = useState([]);
   const [aiReading, setAiReading] = useState("");
-  const [readingLoading, setReadingLoading] = useState(false); 
+  const [readingLoading, setReadingLoading] = useState(false);
 
-  const handleDrawCards = async (e) => {
+  const handleDrawCards = async () => {
     if (!question.trim()) {
       alert("Please enter a question first.");
       return;
@@ -19,54 +18,56 @@ function App() {
 
     if (loading) return;
 
-    // disable button immediately
-    e.target.disabled = true;
-
     setLoading(true);
     setReadingLoading(true);
     setAiReading("");
     setCards([]);
     setVisibleCards([]);
-    
-    try {
-      // fetch 3 cards
-      const promises = [1, 2, 3].map(() =>
-        axios.get("https://tarotapi-g3x5.onrender.com/cards/onecard")
-      );
-      const results = await Promise.all(promises);
-      const drawnCards = results.map(res => res.data);
-      setCards(drawnCards);
-      setOpenIndexes([]);
 
-      // reveal cards one by one
-      drawnCards.forEach((card, index) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/cards`);
+      const deck = await response.json();
+
+      let availableCards = [...deck];
+      let drawn = [];
+
+      for (let i = 0; i < 3; i++) {
+        const randomIndex = Math.floor(Math.random() * availableCards.length);
+        const selectedCard = availableCards[randomIndex];
+        drawn.push(selectedCard);
+        availableCards.splice(randomIndex, 1);
+      }
+
+      setCards(drawn);
+
+      drawn.forEach((card, index) => {
         setTimeout(() => {
           setVisibleCards((prev) => [...prev, card]);
-        }, index * 500); 
+        }, index * 800);
       });
 
-      // get AI tarot reading
-      const readingRes = await axios.post("https://tarotapi-g3x5.onrender.com/reading", {
-        question,
-        cards: drawnCards,
+      const readingResponse = await fetch(`${import.meta.env.VITE_API_URL}/reading`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question, cards: drawn }),
       });
 
-      setAiReading(readingRes.data.reading);
+      const readingData = await readingResponse.json();
+      setAiReading(readingData.reading); 
+
     } catch (error) {
-      console.error(error);
-      alert("The cards are busy. Please try again in a moment..");
+      console.error("Error drawing cards:", error);
+      alert("Something went wrong, please try again later.");
+    } finally {
+      setLoading(false);
+      setReadingLoading(false);
     }
-
-    // re-enable button after everything is done
-    setLoading(false);
-    setReadingLoading(false);
-    e.target.disabled = false;
   };
 
   const toggleDescription = (index) => {
-    setOpenIndexes(prev =>
+    setOpenIndexes((prev) =>
       prev.includes(index)
-        ? prev.filter(i => i !== index)
+        ? prev.filter((i) => i !== index)
         : [...prev, index]
     );
   };
@@ -92,7 +93,7 @@ function App() {
         <h1>🌙 Moon and Cards 🌙</h1>
 
         <p>
-          Ask the cards anything, your question, your thoughts, or whatever’s on your mind. 
+          Ask the cards anything, your question, your thoughts, or whatever’s on your mind.
           Scroll down to discover your tarot reading. <br />
           <em>For entertainment purposes only. Results may not always be accurate.</em>
         </p>
@@ -112,7 +113,7 @@ function App() {
           {visibleCards.map((card, index) => (
             <div key={index} className="card fade-in">
               <img
-                src={`https://tarotapi-g3x5.onrender.com${card.image}`}
+                src={`${import.meta.env.VITE_API_URL}${card.image}`}
                 alt={card.name}
                 className="card-image"
               />
