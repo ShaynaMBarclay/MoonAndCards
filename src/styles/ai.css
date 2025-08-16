@@ -52,31 +52,6 @@
 }
 
 
-.ai-reading {
-  font-family: "Libertinus Sans", sans-serif;
-  font-size: 1.3rem;
-  margin-top: 25px;
-  padding: 15px;
-  border: 1px solid #6a6abf;
-  border-radius: 10px;
-  background: rgba(74, 74, 138, 0.1);
-  color: #ceaee4;
-  font-style: italic;
-  text-align: center;
-  min-height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 2; 
-}
-
-.spinner {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Each star */
 .spinner .star {
   width: 25px;
