@@ -150,6 +150,7 @@ button:hover {
 }
 
 .description-container.open {
+  max-height: 20000px;
   opacity: 1;
 }
 
