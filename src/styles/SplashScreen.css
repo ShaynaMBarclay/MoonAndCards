@@ -1,0 +1,101 @@
+.splash-container {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #0b0c10, #000000);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 1s ease;
+}
+
+.fade-in {
+  opacity: 1;
+}
+
+.fade-out {
+  opacity: 0;
+}
+
+/* Floating crescent moon */
+.moon {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #fff9e6;
+  box-shadow: 0 0 30px 10px rgba(255, 245, 200, 0.6);
+  position: relative;
+  animation: float 3s ease-in-out infinite;
+}
+
+.moon::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 30px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #0b0c10;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+.welcome-text {
+  margin-top: 2rem;
+  color: #f9e6ff;
+  font-size: 3rem;
+  font-family: "Parisienne", cursive;
+  text-shadow: 0 0 10px #d6b3ff, 0 0 20px #fff;
+  opacity: 0;
+  animation: fadeInText 2s ease forwards 1s;
+}
+
+@keyframes fadeInText {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .moon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .moon::after {
+    width: 80px;
+    height: 80px;
+    left: 20px;
+  }
+
+  .welcome-text {
+    font-size: 1.8rem;
+    text-align: center;
+    margin-top: 1.2rem;
+    padding: 0 1rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .moon {
+    width: 100px;
+    height: 100px;
+  }
+
+  .moon::after {
+    width: 100px;
+    height: 100px;
+    left: 25px;
+  }
+
+  .welcome-text {
+    font-size: 2.3rem;
+    margin-top: 1.5rem;
+  }
+}

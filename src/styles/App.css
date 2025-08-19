@@ -1,5 +1,6 @@
 @import "./ai.css";
 @import "./stars.css";
+@import "./SplashScreen.css";
 
 @import url('https://fonts.googleapis.com/css2?family=Amarante&family=Beau+Rivage&family=Delius+Swash+Caps&family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&family=Parisienne&display=swap');
 
@@ -55,6 +56,17 @@ p {
   font-size: 1.2rem;
   color: #f0e6ff;
   font-family: "Libertinus Sans", sans-serif;
+}
+
+.main-content {
+  opacity: 0;
+  transform: scale(0.98);
+  transition: opacity 1.5s ease, transform 1.5s ease;
+}
+
+.main-content.fade-in {
+  opacity: 1;
+  transform: scale(1);
 }
 
 
