@@ -5,6 +5,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Amarante&family=Beau+Rivage&family=Delius+Swash+Caps&family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&family=Parisienne&display=swap');
 
 html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+
+body::-webkit-scrollbar {
+  width: 12px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #1a1a3d;
+  border-radius: 10px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #7d5fff, #b19cd9);
+  border-radius: 10px;
+  border: 3px solid #1a1a3d;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #b19cd9, #f0e6ff);
+}
+
+body {
+  scrollbar-width: thin;
+  scrollbar-color: #7d5fff #1a1a3d;
+}
+
+
+html, body {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -188,6 +218,7 @@ button:hover {
 .card.fade-in {
   animation: fadeInUp 1.5s ease forwards;
 }
+
 
 
 /* Tablet screens (portrait & small landscape) */
